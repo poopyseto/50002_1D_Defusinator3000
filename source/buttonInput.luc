@@ -1,0 +1,99 @@
+module buttonInput (
+    input clk,  // clock
+    input rst,  // reset
+    input button[9],
+    output bsel,
+    output checkForInput
+
+  ) {
+
+  .clk(clk),.rst(rst){
+    fsm buttonInput = {IDLE, B1, B2, B3, B4, B5, B6, B7, B8,B9};
+    
+  }
+
+  always {
+    bsel = 4b0;
+    checkForInput = 0;
+    case(buttonInput.q){
+      
+      buttonInput.IDLE:
+      checkForInput = 0;
+      if(button[0]){
+        buttonInput.d = buttonInput.B1;
+      }
+      else if(button[1]){
+        buttonInput.d = buttonInput.B2;
+      }
+      else if(button[2]){
+        buttonInput.d = buttonInput.B3;
+      }
+      else if(button[3]){
+        buttonInput.d = buttonInput.B4;
+      }
+      else if(button[4]){
+        buttonInput.d = buttonInput.B5;
+      }
+      else if(button[5]){
+        buttonInput.d = buttonInput.B6;
+      }
+      else if(button[6]){
+        buttonInput.d = buttonInput.B7;
+      }
+      else if(button[7]){
+        buttonInput.d = buttonInput.B8;
+      }
+      else if(button[8]){
+        buttonInput.d = buttonInput.B9;
+      }
+      
+      else{
+        buttonInput.d = buttonInput.IDLE;
+      }
+      
+      buttonInput.B1:
+      bsel = 4b0001;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B2:
+      bsel = 4b0010;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+      
+      buttonInput.B3:
+      bsel = 4b0011;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+      
+      buttonInput.B4:
+      bsel = 4b0100;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B5:
+      bsel = 4b0101;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B6:
+      bsel = 4b0110;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B7:
+      bsel = 4b0111;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B8:
+      bsel = 4b1000;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+        
+      buttonInput.B9:
+      bsel = 4b1001;
+      checkForInput = 1;
+      buttonInput.d = buttonInput.IDLE;
+  }
+}

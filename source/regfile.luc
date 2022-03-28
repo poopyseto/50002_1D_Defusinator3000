@@ -1,6 +1,8 @@
 module regfile (
     input clk,  // clock
     input rst,  // reset
+    output r0[16],
+    output r1[16],
     output out
   ) {
 

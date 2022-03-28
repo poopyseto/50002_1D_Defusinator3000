@@ -1,7 +1,8 @@
 module wdsel (
     input clk,  // clock
     input rst,  // reset
-    output out
+    output out,
+    output doneCalculation
   ) {
 
   always {
