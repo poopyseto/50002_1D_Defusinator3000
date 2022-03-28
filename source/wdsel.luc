@@ -1,0 +1,21 @@
+module wdsel (
+    // input clk,  // clock
+    // input rst,  // reset
+    input alu[16],    // input from alu 16 bit
+    input wdsel[2],   // selector signals
+    output out[16]
+  ) {
+  
+  sig k[16];    // intermediate
+  
+  always {
+    
+    // selector signals
+    case(wdsel[1:0]) {
+      default: k = 16h0000;
+      b00: k = alu;
+      b01: k = 16h0000;
+      b10: k = 16hFFFF;
+    }
+    out = k;
+}
