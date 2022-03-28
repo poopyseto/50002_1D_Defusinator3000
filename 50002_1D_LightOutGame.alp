@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="50002_1D_LightOutGame" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>alu_adder.luc</src>
-    <src>decimal_counter.luc</src>
-    <src>alu.luc</src>
     <src>alu_multiplier.luc</src>
-    <src>alu_modulo.luc</src>
-    <src>seven_seg.luc</src>
-    <src>multi_dec_ctr.luc</src>
-    <component>reset_conditioner.luc</component>
-    <src>alu_compare.luc</src>
-    <src>alu_shifter.luc</src>
+    <src>alu.luc</src>
     <src top="true">au_top.luc</src>
     <src>alu_boolean.luc</src>
+    <src>seven_seg.luc</src>
+    <src>alu_adder.luc</src>
+    <src>alu_compare.luc</src>
+    <src>alu_shifter.luc</src>
+    <src>decimal_counter.luc</src>
+    <src>alu_modulo.luc</src>
+    <component>reset_conditioner.luc</component>
+    <src>multi_dec_ctr.luc</src>
+    <constraint>custom_io.acf</constraint>
     <constraint lib="true">alchitry.acf</constraint>
-    <constraint lib="true">au.xdc</constraint>
   </files>
 </project>

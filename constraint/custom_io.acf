@@ -1,0 +1,37 @@
+//Player Button Input
+pin io_dip[0] B30 pulldown; 
+pin io_dip[1] B31 pulldown; 
+pin io_dip[2] B33 pulldown; 
+pin io_dip[3] B34 pulldown; 
+pin io_dip[4] B36 pulldown; 
+pin io_dip[5] B37 pulldown; 
+pin io_dip[6] B39 pulldown; 
+pin io_dip[7] B40 pulldown; 
+pin io_dip[8] B42 pulldown;
+
+//Player Start and Reset inputs
+pin io_dip[9] B43 pulldown; 
+pin io_dip[10] B45 pulldown;
+
+//Pattern led lights output
+pin led_light[0] A30 pulldown;
+pin led_light[1] A31 pulldown;
+pin led_light[2] A33 pulldown;
+pin led_light[3] A34 pulldown;
+pin led_light[4] A36 pulldown;
+pin led_light[5] A37 pulldown;
+pin led_light[6] A39 pulldown;
+pin led_light[7] A40 pulldown;
+pin led_light[8] A42 pulldown;
+
+//7 Seg for timer and score
+pin io_seg[0] A5;
+pin io_seg[1] A6;
+pin io_seg[2] A48;
+pin io_seg[3] A46;
+pin io_seg[4] A45;
+pin io_seg[5] A3;
+pin io_seg[6] A2;
+pin io_seg[7] A49;
+
+
