@@ -1,10 +1,58 @@
-module REGFILE (
-    input clk,  // clock
-    input rst,  // reset
-    output out
-  ) {
-
-  always {
-    out = 0;
+module regfile (
+    input clk,
+    input rst,
+    input write_address[4],
+    input we,
+    input write_data[16],
+    
+    input read_address_a[4],
+    input read_address_b[4],
+    input read_address_c[4],
+    
+    output out_a[16], // to ASEL
+    output out_b[16], // to BSEL
+    
+    // for connecting to LED/ 7 seg
+    // https://github.com/mattwong/MOJO-game/blob/master/Game/source/regfiles.luc
+  )
+  
+  {
+  .clk(clk){
+    .rst(rst){
+      dff startingseq[16] // beginning sequence of lights
+      dff finalseq[16] // final sequence of light
+      dff clearval[16] // clear value
+      // add for timer (7 seg)
+    }
   }
 }
+
+always {
+  
+  // write port
+  if (we){
+    case(write_address){
+      b000: startingseq.d = data;
+      b001: finalseq.d = data;
+      b010: clearval.d = data;
+    }
+  }
+  
+  // read port a
+  case(read_address_a){
+    b000: out_a = startingseq.q;
+    b001: out_a = finalseq.q;
+    b010: out_a = clearval.q;
+  }
+  
+  // read port b
+  case(read_address_b){
+    b000: out_b = startingseq.q;
+    b001: out_b = finalseq.q;
+    b010: out_b = clearval.q;
+  }
+}
+
+// when press the pc select, use the mux
+// control unit: implement mux, which can be used for the pc select
+// feed directly from vdd, connect to vdd directly

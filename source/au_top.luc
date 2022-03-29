@@ -17,9 +17,9 @@ module au_top (
     reset_conditioner reset_cond;
     .rst(rst){
       initialise init;
-
-    
-      }
+      
+      
+    }
   }
   
   always {
@@ -30,11 +30,11 @@ module au_top (
     usb_tx = init.usb_tx;
     
     init.io_dip = io_dip;
-
+    
     led_light = init.led_lights;
     io_seg = init.io_seg;
     io_sel = init.io_sel;
- 
+    
     
   }
 }
