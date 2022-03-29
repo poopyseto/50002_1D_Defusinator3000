@@ -1,0 +1,47 @@
+module bsel_mux (
+    input clk,  // clock
+    input rst,  // reset
+    input rb_data[16],
+    input bsel[4],
+    output out[16]
+  ) {
+    sig bsel_1[16];
+    sig bsel_2[16];
+    sig bsel_3[16];
+    sig bsel_4[16];
+    sig bsel_5[16];
+    sig bsel_6[16];
+    sig bsel_7[16];
+    sig bsel_8[16];
+    sig bsel_9[16];
+    sig bsel_A[16];
+  
+  always {
+    out = 0;
+    bsel_1 = b000001011;
+    bsel_2 = b000010101;
+    bsel_3 = b000100110;
+    bsel_4 = b001010001;
+    bsel_5 = b010111010;
+    bsel_6 = b100110100;
+    bsel_7 = b011001000;
+    bsel_8 = b111010000;
+    bsel_9 = b110100000;
+    bsel_A = b000000000;
+    
+    case(bsel){
+      // default: out[0] = 0;
+      b0000: out = rb_data;
+      b0001: out = bsel_1;
+      b0010: out = bsel_2;
+      b0011: out = bsel_3;
+      b0100: out = bsel_4;
+      b0101: out = bsel_5;
+      b0110: out = bsel_6;
+      b0111: out = bsel_7;
+      b1000: out = bsel_8;
+      b1001: out = bsel_9;
+      b1010: out = bsel_A;
+    }
+  }
+}

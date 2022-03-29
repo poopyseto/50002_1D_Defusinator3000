@@ -1,0 +1,23 @@
+module wdsel_mux (
+    input clk,  // clock
+    input rst,  // reset
+    input alu_output,  
+    input wdsel[2],
+    output out[16]
+  ) {
+    sig wdsel_1[16];
+    sig wdsel_2[16];
+
+  
+  always {
+    out = 0;
+    wdsel_1 = b0000000000000000;
+    wdsel_2 = b1111111111111111;
+    case(wdsel){
+      // default: out[0] = 0;
+      b00: out = alu_output;
+      b01: out = wdsel_1;
+      b10: out = wdsel_2;
+    }
+  }
+}
