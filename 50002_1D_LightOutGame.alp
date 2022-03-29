@@ -15,7 +15,7 @@
     <src>alu_shifter.luc</src>
     <src>asel_mux.luc</src>
     <component>reset_conditioner.luc</component>
-    <src>REGFILE.luc</src>
+    <src>regfile.luc</src>
     <src>alu.luc</src>
     <src>alu_modulo.luc</src>
     <constraint>custom_io.acf</constraint>
