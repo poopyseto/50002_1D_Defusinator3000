@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="50002_1D_LightOutGame" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>alu_mux.luc</src>
-    <src top="true">au_top.luc</src>
+    <src>buttonInput.luc</src>
     <src>bsel_mux.luc</src>
-    <src>alu_compare.luc</src>
-    <src>multi_dec_ctr.luc</src>
-    <src>decimal_counter.luc</src>
-    <src>wdsel_mux.luc</src>
-    <src>seven_seg.luc</src>
-    <src>alu_boolean.luc</src>
+    <component>pipeline.luc</component>
     <src>alu_multiplier.luc</src>
-    <src>alu_adder.luc</src>
-    <src>alu_shifter.luc</src>
-    <src>asel_mux.luc</src>
-    <component>reset_conditioner.luc</component>
-    <src>regfile.luc</src>
-    <src>alu.luc</src>
     <src>alu_modulo.luc</src>
-    <constraint>custom_io.acf</constraint>
+    <src>seven_seg.luc</src>
+    <src>regfile.luc</src>
+    <src>alu_shifter.luc</src>
+    <src>alu_boolean.luc</src>
+    <src top="true">au_top.luc</src>
+    <src>alu_adder.luc</src>
+    <src>decimal_counter.luc</src>
+    <src>alu.luc</src>
+    <src>initialise.luc</src>
+    <src>multi_dec_ctr.luc</src>
+    <src>alu_mux.luc</src>
+    <src>alu_compare.luc</src>
+    <component>reset_conditioner.luc</component>
+    <component>edge_detector.luc</component>
+    <component>button_conditioner.luc</component>
+    <src>wdsel_mux.luc</src>
+    <src>asel_mux.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint>custom_io.acf</constraint>
   </files>
