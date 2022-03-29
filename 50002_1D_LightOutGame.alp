@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="50002_1D_LightOutGame" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>alu_boolean.luc</src>
-    <component>edge_detector.luc</component>
-    <src>wdsel.luc</src>
-    <src>alu_compare.luc</src>
-    <src>alu_multiplier.luc</src>
-    <src>alu_adder.luc</src>
-    <src>multi_dec_ctr.luc</src>
-    <src>alu.luc</src>
-    <src>alu_modulo.luc</src>
-    <component>reset_conditioner.luc</component>
-    <src>decimal_counter.luc</src>
-    <src top="true">au_top.luc</src>
-    <src>alu_shifter.luc</src>
-    <src>seven_seg.luc</src>
-    <src>initialise.luc</src>
-    <src>regfile.luc</src>
-    <component>pipeline.luc</component>
-    <component>button_conditioner.luc</component>
     <src>buttonInput.luc</src>
+    <component>pipeline.luc</component>
+    <src>alu_multiplier.luc</src>
+    <src>alu_modulo.luc</src>
+    <src>seven_seg.luc</src>
+    <src>regfile.luc</src>
+    <src>alu_shifter.luc</src>
+    <src>alu_boolean.luc</src>
+    <src top="true">au_top.luc</src>
+    <src>alu_adder.luc</src>
+    <src>wdsel.luc</src>
+    <src>decimal_counter.luc</src>
+    <src>alu.luc</src>
+    <src>initialise.luc</src>
+    <src>multi_dec_ctr.luc</src>
+    <src>alu_compare.luc</src>
+    <component>reset_conditioner.luc</component>
+    <component>edge_detector.luc</component>
+    <component>button_conditioner.luc</component>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint>custom_io.acf</constraint>
   </files>
