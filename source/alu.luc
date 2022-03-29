@@ -9,6 +9,10 @@ module alu (
     output v,
     output n
   ) { 
+  
+  asel_mux asel_muxcomp;
+  bsel_mux bsel_muxcomp;
+  
   alu_shifter shiftmod;
   alu_adder addermod;
   alu_boolean booleanmod;
@@ -16,6 +20,7 @@ module alu (
   alu_multiplier multipliermod;
   alu_modulo modulomod;
   sig z1, v1, n1, k[16], r[16], l[16];
+
   
   always {
   

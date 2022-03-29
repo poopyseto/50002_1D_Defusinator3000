@@ -1,0 +1,15 @@
+module bsel_mux (
+    input clk,  // clock
+    input rst,  // reset
+    input alu_output,  
+    input wdsel[2],
+    output out
+  ) {
+  sig wdsel_1[16] = b000000000000;
+  sig wdsel_2[16] = b1111111111111111;
+
+  
+  always {
+    out = 0;
+  }
+}

@@ -1,0 +1,13 @@
+module asel_mux (
+    input clk,  // clock
+    input rst,  // reset
+    input ra_data[16],
+    input asel,
+    output out
+  ) {
+  sig asel_1[16] = b000000000000;
+  
+  always {
+    out = 0;
+  }
+}
