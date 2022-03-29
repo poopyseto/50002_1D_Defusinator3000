@@ -12,6 +12,7 @@
     <src>alu.luc</src>
     <src>multi_dec_ctr.luc</src>
     <src>alu_adder.luc</src>
+    <src>REGFILE.luc</src>
     <src>alu_boolean.luc</src>
     <src>bsel_mux.luc</src>
     <src>alu_modulo.luc</src>

@@ -10,9 +10,6 @@ module alu (
     output n
   ) { 
   
-  asel_mux asel_muxcomp;
-  bsel_mux bsel_muxcomp;
-  wdsel_mux wdsel_muxcomp;
   
   alu_shifter shiftmod;
   alu_adder addermod;
