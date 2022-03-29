@@ -3,11 +3,17 @@ module asel_mux (
     input rst,  // reset
     input ra_data[16],
     input asel,
-    output out
+    output out[16]
   ) {
-  sig asel_1[16] = b000000000000;
+  sig asel_1[16];
   
   always {
-    out = 0;
+    out = 16b0;
+    asel_1 = b000000000;
+    case(asel){
+      // default: out[0] = 0;
+      b0: out = ra_data;
+      b1: out = asel_1;
+    }
   }
 }

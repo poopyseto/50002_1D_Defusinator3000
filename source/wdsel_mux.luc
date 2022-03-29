@@ -3,9 +3,9 @@ module bsel_mux (
     input rst,  // reset
     input alu_output,  
     input wdsel[2],
-    output out
+    output out[16]
   ) {
-  sig wdsel_1[16] = b000000000000;
+  sig wdsel_1[16] = b0000000000000000;
   sig wdsel_2[16] = b1111111111111111;
 
   
