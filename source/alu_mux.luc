@@ -32,7 +32,6 @@ module alu_mux (
     alu_comp.a = asel_mux_comp.out;
     alu_comp.b = bsel_mux_comp.out;
     alu_comp.alufn = alufn;
-    alu_comp.lsb = lsb;
     alu_comp.clk = clk;
     
     // wdsel_comp.rst = rst;
