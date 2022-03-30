@@ -7,10 +7,9 @@ module regfile (
     
     input read_address_a[4],
     input read_address_b[4],
-    input read_address_c[4],
     
     output out_a[16], // to ASEL
-    output out_b[16], // to BSEL
+    output out_b[16] // to BSEL
     
     // for connecting to LED/ 7 seg
     // https://github.com/mattwong/MOJO-game/blob/master/Game/source/regfiles.luc
@@ -19,40 +18,52 @@ module regfile (
   {
   .clk(clk){
     .rst(rst){
-      dff startingseq[16] // beginning sequence of lights
-      dff finalseq[16] // final sequence of light
-      dff clearval[16] // clear value
+      dff board_state[16];
+      dff clearval[16]; // clear value
+      dff startingseq[16];
+      dff secondseq[16]; // beginning sequence of lights
+      dff finalseq[16]; // final sequence of light
+      dff temp_reg[16];
       // add for timer (7 seg)
     }
   }
-}
 
-always {
-  
-  // write port
-  if (we){
-    case(write_address){
-      b000: startingseq.d = data;
-      b001: finalseq.d = data;
-      b010: clearval.d = data;
+  always {
+    
+    // write port
+    if (we){
+      case(write_address){
+        b0000: board_state.d = write_data;
+        b0001: clearval.d = write_data;
+        b0010: startingseq.d = write_data;
+        b0011: secondseq.d = write_data;
+        b0100: finalseq.d = write_data;
+        b0101: temp_reg.d = write_data;
+      }
+    }
+    // read port a
+    case(read_address_a){
+      b0000: out_a = board_state.q;
+      b0001: out_a = clearval.q;
+      b0010: out_a = startingseq.q;
+      b0011: out_a = secondseq.q;
+      b0100: out_a = finalseq.q;
+      b0101: out_a = temp_reg.q;
+      default: out_a = startingseq.q;
+    }
+    
+    // read port b
+    case(read_address_b){
+      b0000: out_b = board_state.q;
+      b0001: out_b = clearval.q;
+      b0010: out_b = startingseq.q;
+      b0011: out_b = secondseq.q;
+      b0100: out_b = finalseq.q;
+      b0101: out_b = temp_reg.q;
+      default: out_b = startingseq.q;
     }
   }
-  
-  // read port a
-  case(read_address_a){
-    b000: out_a = startingseq.q;
-    b001: out_a = finalseq.q;
-    b010: out_a = clearval.q;
-  }
-  
-  // read port b
-  case(read_address_b){
-    b000: out_b = startingseq.q;
-    b001: out_b = finalseq.q;
-    b010: out_b = clearval.q;
-  }
 }
-
 // when press the pc select, use the mux
 // control unit: implement mux, which can be used for the pc select
 // feed directly from vdd, connect to vdd directly
