@@ -1,6 +1,4 @@
 module asel_mux (
-    input clk,  // clock
-    input rst,  // reset
     input ra_data[16],
     input asel,
     output out[16]

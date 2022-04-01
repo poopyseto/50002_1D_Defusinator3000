@@ -9,8 +9,8 @@ module regfile (
     input read_address_b[4],
     
     output out_a[16], // to ASEL
-    output out_b[16] // to BSEL
-    
+    output out_b[16], // to BSEL
+    output led_light[12]
     // for connecting to LED/ 7 seg
     // https://github.com/mattwong/MOJO-game/blob/master/Game/source/regfiles.luc
   )
@@ -50,6 +50,7 @@ module regfile (
       b0011: out_a = secondseq.q;
       b0100: out_a = finalseq.q;
       b0101: out_a = temp_reg.q;
+      b1111: out_a = 16b0;
       default: out_a = startingseq.q;
     }
     
@@ -61,8 +62,12 @@ module regfile (
       b0011: out_b = secondseq.q;
       b0100: out_b = finalseq.q;
       b0101: out_b = temp_reg.q;
+      b1111: out_b = 16b0;
       default: out_b = startingseq.q;
     }
+    
+    led_light[8:0] = board_state.q[8:0];
+    led_light[11:9] = clearval.q[2:0];
   }
 }
 // when press the pc select, use the mux

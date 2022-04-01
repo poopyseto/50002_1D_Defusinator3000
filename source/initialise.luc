@@ -24,9 +24,9 @@ module initialise (
     
     .rst(rst){
       buttonInput buttonIn;
-      regfile reg;
+//      regfile reg;
       calculation calculationunit;
-      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, IDLE2};
+      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN};
     }
   }
   
@@ -34,9 +34,9 @@ module initialise (
 
   always {
     
-    led_lights = 8h00;   // off everything
+    led_lights = 12h000;
     io_seg = ~8h00;
-    io_sel = ~4h0;
+    io_sel = ~3h0;
     usb_tx = usb_rx;       // echo the serial data
     calculationunit.alufn = 6b0;
     calculationunit.asel = 1b0;
@@ -46,13 +46,10 @@ module initialise (
     calculationunit.rb = 4b1111;
     calculationunit.rc = 4b1111;
     calculationunit.wdsel = 2b0;
+    led_lights = calculationunit.led_lights;
     // led_lights[11:9] = reg.r1[2:0];     // the CLEAR level lights, corresponds to bit 0-2 of register 1
     // led_lights[8:0] = reg.r0 [8:0];     // the game state which is referenced from register 0
-    reg.read_address_a = 4b1111;
-    reg.read_address_b = 4b1111;
-    reg.write_data = 16b0;
-    reg.we = 0;
-    reg.write_address = 4b1111;
+    
     
     buttoncond.in = io_dip[10];
     buttondetector.in = buttoncond.out;
@@ -107,13 +104,13 @@ module initialise (
         calculationunit.we = 1b1;
         calculationunit.ra = 4h0;
         calculationunit.rb = 4hF;
-        calculationunit.rc = 4hE;
+        calculationunit.rc = 4b0101;
         calculationunit.wdsel = 2b0;
 //        if (calculation.doneCalculation){
-//        gameMode.d = gameMode.CHECKCLEAR;
+        gameMode.d = gameMode.CHECKCLEAR;
 //        }
 //        else{
-        gameMode.d = gameMode.CHECKBOARD;
+//        gameMode.d = gameMode.CHECKBOARD;
 //       }
         
       gameMode.CHECKCLEAR:
@@ -121,23 +118,64 @@ module initialise (
         calculationunit.asel = 1b0;
         calculationunit.bsel = 4h0;
         calculationunit.we = 1b1;
-        calculationunit.ra = 4hF;
-        calculationunit.rb = 4hE;
+        calculationunit.ra = 4h1;
+        calculationunit.rb = 4b0101;
         calculationunit.rc = 4h1; 
         calculationunit.wdsel = 2b0;
         
-        reg.read_address_a = 4b0;
 //        if (calculation.doneCalculation){    // I think need a variable here to check whether got do calculation
-          if(reg.out_a[0] == 1){         // check contents of register 1
-          gameMode.d = gameMode.IDLE2;
-          }
-          else if (reg.out_a[0] == 0){
+          if(calculationunit.bdata[0] == b1){
+            if(calculationunit.adata[1:0] == b00){
+                gameMode.d = gameMode.INIT2;
+              }
+            else if(calculationunit.adata[1:0] == b01){
+                gameMode.d = gameMode.INIT3;
+              }
+            else if (calculationunit.adata[1:0] == b10){
+                gameMode.d = gameMode.WIN;
+              }
+        }
+          else if (calculationunit.bdata[0] == b0){
           gameMode.d = gameMode.IDLE1;
           }
 //        }
 //        else{
 //        gameMode.d = gameMode.CHECKCLEAR;
 //        }
-       
+      gameMode.INIT2:
+        calculationunit.alufn = 6b011010;    // ALUFN for "A"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4hA;
+        calculationunit.we = 1b1;
+        calculationunit.ra = 4h3;
+        calculationunit.rc = 4h0;
+        calculationunit.wdsel = 2b0;
+        gameMode.d = gameMode.IDLE1;
+        
+      gameMode.INIT3:
+        calculationunit.alufn = 6b011010;    // ALUFN for "A"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4hA;
+        calculationunit.we = 1b1;
+        calculationunit.ra = 4h4;
+        calculationunit.rc = 4h0;
+        calculationunit.wdsel = 2b0;
+        gameMode.d = gameMode.IDLE1;    
+          
+      gameMode.WIN:
+        calculationunit.alufn = 6b000101;    // ALUFN for "NOT A"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4hA;
+        calculationunit.we = 1b1;
+        calculationunit.ra = 4hF;
+        calculationunit.rc = 4h0;
+        calculationunit.wdsel = 2b0;
+        
+        if(io_dip[10]) {      // check if reset == 1 
+          calculationunit.we = 1b1;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b01;
+          gameMode.d = gameMode.IDLE;
+        }       
   }
 }

@@ -1,5 +1,4 @@
 module alu (
-    input clk,       //clock not supposed to be used
     input a[16],
     input b[16],
     input alufn[6],  // alufn signal

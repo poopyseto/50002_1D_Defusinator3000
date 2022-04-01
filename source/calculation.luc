@@ -8,16 +8,18 @@ module calculation (
     input ra[4],
     input rb[4],
     input rc[4],
-    input wdsel[2]
-    
+    input wdsel[2],
+    output adata[16],
+    output bdata[16],
+    output led_lights[12]
   ) {
 
   .clk(clk){    
     .rst(rst){
       regfile reg;
-      alu_mux alumux_unit;
     }
   }
+  alu_mux alumux_unit;
   
   always {
     alumux_unit.wdsel = wdsel;
@@ -33,6 +35,10 @@ module calculation (
     alumux_unit.ra_data = reg.out_a;
     alumux_unit.rb_data = reg.out_b;
     
+    adata = reg.out_a;
+    bdata = reg.out_b;
+    
     reg.write_data = alumux_unit.out;
+    led_lights = reg.led_light;
   }
 }
