@@ -39,6 +39,7 @@ module regfile (
         b0011: secondseq.d = write_data;
         b0100: finalseq.d = write_data;
         b0101: temp_reg.d = write_data;
+        default: temp_reg.d = temp_reg.q;
       }
     }
     // read port a

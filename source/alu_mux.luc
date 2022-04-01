@@ -2,12 +2,11 @@ module alu_mux (
     input clk,  // clock
     input rst,  // reset 
     input alufn[6],  // alufn signal
-    input lsb,
     input asel,
-    input bsel,
-    input wdsel,
-    input ra_data,
-    input rb_data,
+    input bsel[4],
+    input wdsel[2],
+    input ra_data[16],
+    input rb_data[16],
     output out[16]
   ) {
 
