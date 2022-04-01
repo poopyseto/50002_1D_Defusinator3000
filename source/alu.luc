@@ -1,9 +1,7 @@
 module alu (
-    input clk,       //clock not supposed to be used
     input a[16],
     input b[16],
     input alufn[6],  // alufn signal
-    input lsb,
     output out[16],
     output z,
     output v,
@@ -82,9 +80,6 @@ module alu (
       b10: l = shiftmod.out;
       b11: l = comparemod.out;
   }
-    if(lsb == 1){    //if the switch io_dip[2][7] is on, then invert least significant bit, change ans for error checking
-      l[0] = ~l[0];
-      }
       out = l;
 }
 }

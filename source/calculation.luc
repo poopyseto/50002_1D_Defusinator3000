@@ -1,0 +1,44 @@
+module calculation (
+    input clk,  // clock
+    input rst,  // reset
+    input alufn[6],
+    input asel,
+    input bsel[4],
+    input we,
+    input ra[4],
+    input rb[4],
+    input rc[4],
+    input wdsel[2],
+    output adata[16],
+    output bdata[16],
+    output led_lights[12]
+  ) {
+
+  .clk(clk){    
+    .rst(rst){
+      regfile reg;
+    }
+  }
+  alu_mux alumux_unit;
+  
+  always {
+    alumux_unit.wdsel = wdsel;
+    alumux_unit.asel = asel;
+    alumux_unit.bsel = bsel;
+    alumux_unit.alufn = alufn;
+    
+    reg.read_address_a = ra;
+    reg.read_address_b = rb;
+    reg.write_address = rc;
+    reg.we = we;
+    
+    alumux_unit.ra_data = reg.out_a;
+    alumux_unit.rb_data = reg.out_b;
+    
+    adata = reg.out_a;
+    bdata = reg.out_b;
+    
+    reg.write_data = alumux_unit.out;
+    led_lights = reg.led_light;
+  }
+}

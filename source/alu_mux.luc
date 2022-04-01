@@ -1,13 +1,10 @@
 module alu_mux (
-    input clk,  // clock
-    input rst,  // reset 
     input alufn[6],  // alufn signal
-    input lsb,
     input asel,
-    input bsel,
-    input wdsel,
-    input ra_data,
-    input rb_data,
+    input bsel[4],
+    input wdsel[2],
+    input ra_data[16],
+    input rb_data[16],
     output out[16]
   ) {
 
@@ -19,24 +16,16 @@ module alu_mux (
   
   always {
     out = 0;
-    asel_mux_comp.rst = rst;
-    asel_mux_comp.clk = clk;
     asel_mux_comp.asel = asel;
     asel_mux_comp.ra_data = ra_data;
     
-    bsel_mux_comp.rst = rst;
-    bsel_mux_comp.clk = clk;
     bsel_mux_comp.bsel = bsel;
     bsel_mux_comp.rb_data = rb_data;
     
     alu_comp.a = asel_mux_comp.out;
     alu_comp.b = bsel_mux_comp.out;
     alu_comp.alufn = alufn;
-    alu_comp.lsb = lsb;
-    alu_comp.clk = clk;
     
-    // wdsel_comp.rst = rst;
-    // wdsel_comp.clk = clk;
     wdsel_comp.wdsel = wdsel;
     wdsel_comp.alu = alu_comp.out;
     

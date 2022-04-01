@@ -1,6 +1,4 @@
 module bsel_mux (
-    input clk,  // clock
-    input rst,  // reset
     input rb_data[16],
     input bsel[4],
     output out[16]

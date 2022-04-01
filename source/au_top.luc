@@ -2,7 +2,7 @@ module au_top (
     input clk,              // 100MHz clock
     input rst_n,            // reset button (active low)
     input io_dip[11],       // user input for game buttons [8:0], start [9] and end [10]
-    output led_light [12],   // 8 user controllable LEDs
+    output led_light[12],   // 8 user controllable LEDs
     output io_seg[8],
     output io_sel[3],
     input usb_rx,           // USB->Serial input
@@ -16,9 +16,7 @@ module au_top (
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
     .rst(rst){
-      initialise init;
-      
-      
+      initialise init;      
     }
   }
   
@@ -34,6 +32,7 @@ module au_top (
     led_light = init.led_lights;
     io_seg = init.io_seg;
     io_sel = init.io_sel;
+   
     
     
   }

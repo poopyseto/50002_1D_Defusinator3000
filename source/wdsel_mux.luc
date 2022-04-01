@@ -1,6 +1,4 @@
 module wdsel_mux (
-    // input clk,  // clock
-    // input rst,  // reset
     input alu[16],    // input from alu 16 bit
     input wdsel[2],   // selector signals
     output out[16]
