@@ -5,25 +5,28 @@
     <component>pipeline.luc</component>
     <src>decimal_counter.luc</src>
     <src>regfile.luc</src>
-    <src>multi_dec_ctr.luc</src>
+    <component>counter.luc</component>
     <src>bsel_mux.luc</src>
-    <src top="true">au_top.luc</src>
-    <src>alu_boolean.luc</src>
     <src>wdsel_mux.luc</src>
+    <src>calculation.luc</src>
+    <src>alu.luc</src>
+    <src>alu_adder.luc</src>
+    <src>alu_mux.luc</src>
+    <component>reset_conditioner.luc</component>
+    <component>button_conditioner.luc</component>
+    <src>multi_dec_ctr.luc</src>
+    <src top="true">au_top.luc</src>
+    <component>decoder.luc</component>
+    <src>alu_boolean.luc</src>
+    <src>multi_seven_seg.luc</src>
     <src>alu_multiplier.luc</src>
     <src>seven_seg.luc</src>
     <src>alu_shifter.luc</src>
     <src>alu_compare.luc</src>
     <src>alu_modulo.luc</src>
-    <src>calculation.luc</src>
-    <src>alu.luc</src>
     <src>buttonInput.luc</src>
-    <src>alu_adder.luc</src>
-    <src>alu_mux.luc</src>
-    <component>reset_conditioner.luc</component>
     <component>edge_detector.luc</component>
     <src>asel_mux.luc</src>
-    <component>button_conditioner.luc</component>
     <constraint>custom_io.acf</constraint>
   </files>
 </project>

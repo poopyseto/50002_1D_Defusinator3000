@@ -21,12 +21,16 @@ module initialise (
   .clk(clk){
     button_conditioner buttoncond[11];
     edge_detector buttondetector[11](#RISE(1), #FALL(0));
+    edge_detector seven_seg_detector(#RISE(1), #FALL(0));
     
     .rst(rst){
       buttonInput buttonIn;
 //      regfile reg;
       calculation calculationunit;
       fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN};
+      multi_dec_ctr dec_ctr;
+      multi_seven_seg seg;
+      counter ctr (#SIZE(1), #DIV(26));
     }
   }
   
@@ -50,6 +54,14 @@ module initialise (
     // led_lights[11:9] = reg.r1[2:0];     // the CLEAR level lights, corresponds to bit 0-2 of register 1
     // led_lights[8:0] = reg.r0 [8:0];     // the game state which is referenced from register 0
     
+    
+    // seven_seg decimal_counter
+    seven_seg_detector.in = ctr.value;
+    dec_ctr.inc = seven_seg_detector.out;
+    seg.values = dec_ctr.digits;
+    
+    io_seg = seg.seg;
+    io_sel = ~seg.sel;
     
     buttoncond.in = io_dip[10];
     buttondetector.in = buttoncond.out;
