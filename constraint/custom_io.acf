@@ -47,8 +47,3 @@ pin io_seg[7] C49 pulldown;
 pin io_sel[0] C9 pulldown;
 pin io_sel[1] C8 pulldown;
 pin io_sel[2] C42 pulldown;
-
-//Clear led lights output
-pin led_light[9] A43 pulldown;
-pin led_light[10] A45 pulldown;
-pin led_light[11] A46 pulldown;
