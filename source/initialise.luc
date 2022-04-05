@@ -82,7 +82,8 @@ module initialise (
         calculationunit.ra = 4h2;
         calculationunit.rc = 4h0;
         calculationunit.wdsel = 2b0;
-        gameMode.d = gameMode.IDLE1;          
+        gameMode.d = gameMode.IDLE1;
+                    
         }
       else{
         gameMode.d = gameMode.IDLE;
