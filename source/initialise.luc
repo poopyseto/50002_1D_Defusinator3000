@@ -27,7 +27,7 @@ module initialise (
       buttonInput buttonIn;
 //      regfile reg;
       calculation calculationunit;
-      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN};
+      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN, RESET};
       multi_dec_ctr dec_ctr;
       multi_seven_seg seg;
       counter ctr (#SIZE(1), #DIV(26));
@@ -103,7 +103,7 @@ module initialise (
           calculationunit.we = 1b1;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b01;
-          gameMode.d = gameMode.IDLE;
+          gameMode.d = gameMode.RESET;
     
         }
         else{
@@ -187,7 +187,13 @@ module initialise (
           calculationunit.we = 1b1;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b01;
-          gameMode.d = gameMode.IDLE;
-        }       
+          gameMode.d = gameMode.RESET;
+        }
+      gameMode.RESET:
+        calculationunit.we = 1b1;
+        calculationunit.rc = 4h1;
+        calculationunit.wdsel = 2b01;
+        
+        gameMode.d = gameMode.IDLE;             
   }
 }
