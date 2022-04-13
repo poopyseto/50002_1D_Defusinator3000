@@ -27,9 +27,12 @@ module regfile (
       // add for timer (7 seg)
     }
   }
-
+  
   always {
-    
+  
+    startingseq.d = 16h01FF;
+    secondseq.d = 16h00F0;
+    finalseq.d = 16h00BC;  
     // write port
     if (we){
       case(write_address){
@@ -67,7 +70,14 @@ module regfile (
     }
     
     led_light[8:0] = board_state.q[8:0];
-    led_light[11:9] = clearval.q[2:0];
+    case(clearval.q[1:0]){
+    
+      b00: led_light[11:9] = 3b000;
+      b01: led_light[11:9] = 3b001;
+      b10: led_light[11:9] = 3b011;
+      b11: led_light[11:9] = 3b111;
+      default: led_light[11:9] = 3b000; 
+      } 
   }
 }
 // when press the pc select, use the mux
