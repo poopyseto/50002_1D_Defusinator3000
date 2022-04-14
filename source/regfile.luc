@@ -1,0 +1,85 @@
+module regfile (
+    input clk,
+    input rst,
+    input write_address[4],
+    input we,
+    input write_data[16],
+    
+    input read_address_a[4],
+    input read_address_b[4],
+    
+    output out_a[16], // to ASEL
+    output out_b[16], // to BSEL
+    output led_light[12]
+    // for connecting to LED/ 7 seg
+    // https://github.com/mattwong/MOJO-game/blob/master/Game/source/regfiles.luc
+  )
+  
+  {
+  .clk(clk){
+    .rst(rst){
+      dff board_state[16];
+      dff clearval[16]; // clear value
+      dff startingseq[16];
+      dff secondseq[16]; // beginning sequence of lights
+      dff finalseq[16]; // final sequence of light
+      dff temp_reg[16];
+      // add for timer (7 seg)
+    }
+  }
+  
+  always {
+  
+    startingseq.d = 16h01FF;
+    secondseq.d = 16h00F0;
+    finalseq.d = 16h00BC;  
+    // write port
+    if (we){
+      case(write_address){
+        b0000: board_state.d = write_data;
+        b0001: clearval.d = write_data;
+        b0010: startingseq.d = write_data;
+        b0011: secondseq.d = write_data;
+        b0100: finalseq.d = write_data;
+        b0101: temp_reg.d = write_data;
+        default: temp_reg.d = temp_reg.q;
+      }
+    }
+    // read port a
+    case(read_address_a){
+      b0000: out_a = board_state.q;
+      b0001: out_a = clearval.q;
+      b0010: out_a = startingseq.q;
+      b0011: out_a = secondseq.q;
+      b0100: out_a = finalseq.q;
+      b0101: out_a = temp_reg.q;
+      b1111: out_a = 16b0;
+      default: out_a = startingseq.q;
+    }
+    
+    // read port b
+    case(read_address_b){
+      b0000: out_b = board_state.q;
+      b0001: out_b = clearval.q;
+      b0010: out_b = startingseq.q;
+      b0011: out_b = secondseq.q;
+      b0100: out_b = finalseq.q;
+      b0101: out_b = temp_reg.q;
+      b1111: out_b = 16b0;
+      default: out_b = startingseq.q;
+    }
+    
+    led_light[8:0] = board_state.q[8:0];
+    case(clearval.q[1:0]){
+    
+      b00: led_light[11:9] = 3b000;
+      b01: led_light[11:9] = 3b001;
+      b10: led_light[11:9] = 3b011;
+      b11: led_light[11:9] = 3b111;
+      default: led_light[11:9] = 3b000; 
+      } 
+  }
+}
+// when press the pc select, use the mux
+// control unit: implement mux, which can be used for the pc select
+// feed directly from vdd, connect to vdd directly
