@@ -11,8 +11,6 @@ module regfile (
     output out_a[16], // to ASEL
     output out_b[16], // to BSEL
     output led_light[12]
-    // for connecting to LED/ 7 seg
-    // https://github.com/mattwong/MOJO-game/blob/master/Game/source/regfiles.luc
   )
   
   {
