@@ -33,6 +33,7 @@ module initialise (
       counter ctr (#SIZE(1), #DIV(26));
     }
   }
+  sig checkinp;
   
   
 
@@ -72,6 +73,9 @@ module initialise (
     //gameMode
     case(gameMode.q){
     
+      default:
+        calculationunit.we = 1b0;
+        
       gameMode.IDLE:
       //display some stuff here
       if(io_dip[9]){         // if start == 1
@@ -89,26 +93,73 @@ module initialise (
       }
         
       gameMode.IDLE1:
-        if(buttonIn.checkForInput){
-          calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
-          calculationunit.asel = 1b0;
-          calculationunit.bsel = buttonIn.bsel;  //not sure whether need dff to store bsel, but if need idk whether can implement(cause by right we only can use regfile), if not we can just hard code
-          calculationunit.we = 1b1;
-          calculationunit.ra = 4h0;
-          calculationunit.rc = 4h0;
-          calculationunit.wdsel = 2b0;
-          gameMode.d = gameMode.CHECKBOARD;
-        }
-        else if(io_dip[10]) {      // check if reset == 1 
+        checkinp = 0;
+        if(io_dip[0]){
+          calculationunit.bsel = 4h1;
+          checkinp = 1;          
+          }
+        if(io_dip[1]){
+          calculationunit.bsel = 4h2;
+          checkinp = 1;          
+          }
+        if(io_dip[2]){
+          calculationunit.bsel = 4h3;
+          checkinp = 1;          
+          }
+        if(io_dip[3]){
+          calculationunit.bsel = 4h4;
+          checkinp = 1;          
+          }
+        if(io_dip[4]){
+          calculationunit.bsel = 4h5;
+          checkinp = 1;          
+          }
+        if(io_dip[5]){
+          calculationunit.bsel = 4h6;
+          checkinp = 1;          
+          }
+        if(io_dip[6]){
+          calculationunit.bsel = 4h7;
+          checkinp = 1;          
+          }
+        if(io_dip[7]){
+          calculationunit.bsel = 4h8;
+          checkinp = 1;          
+          }
+        if(io_dip[8]){
+          calculationunit.bsel = 4h9;
+          checkinp = 1;          
+          }
+        if(io_dip[10]) {      // check if reset == 1 
           calculationunit.we = 1b1;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b01;
           gameMode.d = gameMode.RESET;
-    
+          checkinp = 0;
+        }
+        if(checkinp){
+          calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
+          calculationunit.asel = 1b0;
+          // calculationunit.bsel = buttonIn.bsel;  //not sure whether need dff to store bsel, but if need idk whether can implement(cause by right we only can use regfile), if not we can just hard code
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h0;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b0;
+          gameMode.d = gameMode.IDLE1;
         }
         else{
           gameMode.d = gameMode.IDLE1;
         }
+      /*gameMode.B1:
+        calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4h1;
+        calculationunit.we = 1b1;
+        calculationunit.ra = 4h0;
+        calculationunit.rc = 4h0;
+        calculationunit.wdsel = 2b0;
+        gameMode.d = gameMode.IDLE1;*/
+        
       gameMode.CHECKBOARD:
         calculationunit.alufn = 6b110010;       //ALUFN for compare equal
         calculationunit.asel = 1b0;
