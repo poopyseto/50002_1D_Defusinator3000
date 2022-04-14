@@ -33,9 +33,9 @@ pin led_light[6] A39 pulldown;
 pin led_light[7] A40 pulldown;
 pin led_light[8] A42 pulldown;
 //Clear led lights output
-pin led_light[9] A43 pulldown;
+pin led_light[9] A46 pulldown;
 pin led_light[10] A45 pulldown;
-pin led_light[11] A46 pulldown;
+pin led_light[11] A43 pulldown;
 
 
 //7 Seg for timer and score

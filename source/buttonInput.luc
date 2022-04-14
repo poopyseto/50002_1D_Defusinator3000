@@ -95,5 +95,8 @@ module buttonInput (
       bsel = 4b1001;
       checkForInput = 1;
       buttonInput.d = buttonInput.IDLE;
+      
+      default: 
+        checkForInput = 0;
   }
 }

@@ -5,6 +5,7 @@ module initialise (
     output io_sel[3],
     output io_seg[8],
     output led_lights[12], //0-8 is gamestate, 9-11 is level
+    output state[3],
     input usb_rx,
     output usb_tx
     //output alufn[6],
@@ -33,13 +34,13 @@ module initialise (
       counter ctr (#SIZE(1), #DIV(26));
     }
   }
-  sig checkinp;
+  sig checkinp, reset;
   
   
 
   always {
-    
-    led_lights = 12h000;
+    state = gameMode.q;
+    // led_lights = 12h000;
     io_seg = ~8h00;
     io_sel = ~3h0;
     usb_tx = usb_rx;       // echo the serial data
@@ -64,7 +65,7 @@ module initialise (
     io_seg = seg.seg;
     io_sel = ~seg.sel;
     
-    buttoncond.in = io_dip[10];
+    buttoncond.in = io_dip[10:0];
     buttondetector.in = buttoncond.out;
     
     //buttonInput
@@ -78,7 +79,7 @@ module initialise (
         
       gameMode.IDLE:
       //display some stuff here
-      if(io_dip[9]){         // if start == 1
+      if(buttondetector.out[9]){         // if start == 1
         calculationunit.alufn = 6b011010;    // ALUFN for "A"
         calculationunit.asel = 1b0;
         calculationunit.bsel = 4hA;
@@ -94,48 +95,49 @@ module initialise (
         
       gameMode.IDLE1:
         checkinp = 0;
-        if(io_dip[0]){
+        reset = 0;
+        if(buttondetector.out[0]){
           calculationunit.bsel = 4h1;
           checkinp = 1;          
           }
-        if(io_dip[1]){
+        if(buttondetector.out[1]){
           calculationunit.bsel = 4h2;
           checkinp = 1;          
           }
-        if(io_dip[2]){
+        if(buttondetector.out[2]){
           calculationunit.bsel = 4h3;
           checkinp = 1;          
           }
-        if(io_dip[3]){
+        if(buttondetector.out[3]){
           calculationunit.bsel = 4h4;
           checkinp = 1;          
           }
-        if(io_dip[4]){
+        if(buttondetector.out[4]){
           calculationunit.bsel = 4h5;
           checkinp = 1;          
           }
-        if(io_dip[5]){
+        if(buttondetector.out[5]){
           calculationunit.bsel = 4h6;
           checkinp = 1;          
           }
-        if(io_dip[6]){
+        if(buttondetector.out[6]){
           calculationunit.bsel = 4h7;
           checkinp = 1;          
           }
-        if(io_dip[7]){
+        if(buttondetector.out[7]){
           calculationunit.bsel = 4h8;
           checkinp = 1;          
           }
-        if(io_dip[8]){
+        if(buttondetector.out[8]){
           calculationunit.bsel = 4h9;
           checkinp = 1;          
           }
-        if(io_dip[10]) {      // check if reset == 1 
+        if(buttondetector.out[10]) {      // check if reset == 1 
           calculationunit.we = 1b1;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b01;
-          gameMode.d = gameMode.RESET;
           checkinp = 0;
+          reset = 1;
         }
         if(checkinp){
           calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
@@ -145,11 +147,15 @@ module initialise (
           calculationunit.ra = 4h0;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b0;
+          gameMode.d = gameMode.CHECKBOARD;
+        }
+        else if(reset){
+          gameMode.d = gameMode.RESET;
+          }
+        else {
           gameMode.d = gameMode.IDLE1;
         }
-        else{
-          gameMode.d = gameMode.IDLE1;
-        }
+        
       /*gameMode.B1:
         calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
         calculationunit.asel = 1b0;
@@ -226,7 +232,7 @@ module initialise (
         gameMode.d = gameMode.IDLE1;    
           
       gameMode.WIN:
-        calculationunit.alufn = 6b000101;    // ALUFN for "NOT A"
+        calculationunit.alufn = 6b010011;    // ALUFN for "NOT A"
         calculationunit.asel = 1b0;
         calculationunit.bsel = 4hA;
         calculationunit.we = 1b1;
@@ -234,7 +240,7 @@ module initialise (
         calculationunit.rc = 4h0;
         calculationunit.wdsel = 2b0;
         
-        if(io_dip[10]) {      // check if reset == 1 
+        if(buttondetector.out[10]) {      // check if reset == 1 
           calculationunit.we = 1b1;
           calculationunit.rc = 4h0;
           calculationunit.wdsel = 2b01;
@@ -244,7 +250,6 @@ module initialise (
         calculationunit.we = 1b1;
         calculationunit.rc = 4h1;
         calculationunit.wdsel = 2b01;
-        
         gameMode.d = gameMode.IDLE;             
   }
 }
