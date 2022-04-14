@@ -17,9 +17,9 @@ module bsel_mux (
   always {
     out = 0;
     bsel_1 = b000001011;
-    bsel_2 = b000010101;
+    bsel_2 = b000010111;
     bsel_3 = b000100110;
-    bsel_4 = b001010001;
+    bsel_4 = b001011001;
     bsel_5 = b010111010;
     bsel_6 = b100110100;
     bsel_7 = b011001000;

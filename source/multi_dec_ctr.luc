@@ -1,21 +1,31 @@
 module multi_dec_ctr #(
+    // Change DIGITS to 3?
     DIGITS = 4 : DIGITS >= 2  // number of digits
   ) (
     input clk,                // clock
     input rst,                // reset
+    // inc needs to stay high for 1 CLK cycle every time we want to increment
+    // if counter only outputs 1 bit , bit will be high only half the time
+
     input inc,                // increment counter
     output digits[DIGITS][4]  // digit values
   ) {
-  
+ 
   .clk(clk), .rst(rst) {
+      // Take decimal_counter and chain them tgt
+      // Each counter is conncected to previous counter's ovf signal
+
     decimal_counter dctr [DIGITS]; // digit counters
   }
-
+ 
   always {
     dctr.inc[0] = inc;   // increment the first digit
     digits = dctr.value; // output the values
-    
+ 
     // if the previous digit overflows, increment the next
+    // When theres a overflow from 9 to 0 , next one is incremented
+    // If 1st counter does not have previous ctr overflow, use external increment
+    //[1+:DIGITS-1] select the bits going up 
     dctr.inc[1+:DIGITS-1] = dctr.ovf[0+:DIGITS-1];
   }
 }
