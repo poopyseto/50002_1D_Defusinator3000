@@ -33,7 +33,8 @@ module regfile (
     startingseq.d = 16h01FF;
     secondseq.d = 16h00F0;
     finalseq.d = 16h00BC;
-    randseq.d = rng.num[15:0];
+    randseq.d[8:0] = rng.num[8:0];
+    randseq.d[15:9] = 8b0; 
     rng.next = 1b1;  
     // write port
     if (we){
@@ -74,13 +75,12 @@ module regfile (
     }
     
     led_light[8:0] = board_state.q[8:0];
-    case(clearval.q[1:0]){
-    
-      b00: led_light[11:9] = 3b000;
-      b01: led_light[11:9] = 3b001;
-      b10: led_light[11:9] = 3b011;
-      b11: led_light[11:9] = 3b111;
-      default: led_light[11:9] = 3b000; 
+    case(clearval.q[3:0]){
+      b0000: led_light[11:9] = 3b000;
+      b0001: led_light[11:9] = 3b001;
+      b0010: led_light[11:9] = 3b011;
+      b0011: led_light[11:9] = 3b111;
+      default: led_light[11:9] = 3b111; 
       } 
   }
 }

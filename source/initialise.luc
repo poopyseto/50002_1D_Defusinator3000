@@ -28,9 +28,9 @@ module initialise (
       // buttonInput buttonIn;
 //      regfile reg;
       calculation calculationunit;
-      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN, RESET, FRENZY};
-      multi_dec_ctr dec_ctr;
-      multi_seven_seg seg;
+      fsm gameMode = {IDLE, IDLE1, CHECKBOARD, CHECKCLEAR, INIT2 , INIT3, WIN, RESET, FRENZY, FAIL};
+      multi_dec_ctr dec_ctr(#DIGITS(3));
+      multi_seven_seg seg(#DIGITS(3));
       counter ctr (#SIZE(1), #DIV(26));
     }
   }
@@ -61,17 +61,9 @@ module initialise (
     seven_seg_detector.in = ctr.value;
     dec_ctr.inc = 0;
     dec_ctr.set = 4b0;
-    dec_ctr.new_val = {4h0,4h0,4h0,4h0};
-    seg.values = {4h0,4h0,4h0,4h0};
-    if(gameMode.q != gameMode.IDLE){
-      dec_ctr.inc = seven_seg_detector.out;
-      seg.values = dec_ctr.digits;
-      if(dec_ctr.digits == {4h0,4h0,4h0,4h0}){
-        gameMode.d = gameMode.IDLE;
-        }
-      io_seg = seg.seg;
-      io_sel = ~seg.sel;
-    }
+    dec_ctr.new_val = {4h0,4h0,4h0};
+    seg.values = {4h0,4h0,4h0};
+
     buttoncond.in = io_dip[10:0];
     buttondetector.in = buttoncond.out;
     
@@ -96,7 +88,7 @@ module initialise (
         calculationunit.wdsel = 2b0;
         gameMode.d = gameMode.IDLE1;
         dec_ctr.set = 4hF;
-        dec_ctr.new_val = {4h0,4h0,4h1,4h0};          
+        dec_ctr.new_val = {4h1,4h0,4h0};          
         }
       else{
         gameMode.d = gameMode.IDLE;
@@ -105,6 +97,10 @@ module initialise (
       gameMode.IDLE1:
         checkinp = 0;
         reset = 0;
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
         if(buttondetector.out[0]){
           calculationunit.bsel = 4h1;
           checkinp = 1;          
@@ -148,7 +144,10 @@ module initialise (
           checkinp = 0;
           reset = 1;
         }
-        if(checkinp){
+        if(dec_ctr.ovf){
+          gameMode.d = gameMode.FAIL;
+        }
+        else if(checkinp){
           calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
           calculationunit.asel = 1b0;
           // calculationunit.bsel = buttonIn.bsel;  //not sure whether need dff to store bsel, but if need idk whether can implement(cause by right we only can use regfile), if not we can just hard code
@@ -176,84 +175,134 @@ module initialise (
         gameMode.d = gameMode.IDLE1;*/
         
       gameMode.CHECKBOARD:
-        calculationunit.alufn = 6b110010;       //ALUFN for compare equal
-        calculationunit.asel = 1b0;
-        calculationunit.bsel = 4h0;
-        calculationunit.we = 1b1;
-        calculationunit.ra = 4h0;
-        calculationunit.rb = 4hF;
-        calculationunit.rc = 4b0101;
-        calculationunit.wdsel = 2b0;
-//        if (calculation.doneCalculation){
-        gameMode.d = gameMode.CHECKCLEAR;
-//        }
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(dec_ctr.ovf){
+          gameMode.d = gameMode.FAIL;
+        }
+        else{
+          calculationunit.alufn = 6b110010;       //ALUFN for compare equal
+          calculationunit.asel = 1b0;
+          calculationunit.bsel = 4h0;
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h0;
+          calculationunit.rb = 4hF;
+          calculationunit.rc = 4b0101;
+          calculationunit.wdsel = 2b0;
+  //        if (calculation.doneCalculation){
+          gameMode.d = gameMode.CHECKCLEAR;
+  //        }
 //        else{
 //        gameMode.d = gameMode.CHECKBOARD;
 //       }
+        }
         
       gameMode.CHECKCLEAR:
-        calculationunit.alufn = 6b000000;   //ALUFN for ADD
-        calculationunit.asel = 1b0;
-        calculationunit.bsel = 4h0;
-        calculationunit.we = 1b1;
-        calculationunit.ra = 4h1;
-        calculationunit.rb = 4b0101;
-        calculationunit.rc = 4h1; 
-        calculationunit.wdsel = 2b0;
-        
-//        if (calculation.doneCalculation){    // I think need a variable here to check whether got do calculation
-          if(calculationunit.bdata[0] == b1){
-            if(calculationunit.adata[1:0] == b00){
-                gameMode.d = gameMode.INIT2;
-              }
-            else if(calculationunit.adata[1:0] == b01){
-                gameMode.d = gameMode.INIT3;
-              }
-            else if (calculationunit.adata[1:0] == b10){
-                gameMode.d = gameMode.WIN;
-              }
-            else if (calculationunit.adata >= b11){
-                gameMode.d = gameMode.FRENZY;
-            }
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(dec_ctr.ovf){
+          gameMode.d = gameMode.FAIL;
         }
-          else if (calculationunit.bdata[0] == b0){
-          gameMode.d = gameMode.IDLE1;
+        else{
+          calculationunit.alufn = 6b000000;   //ALUFN for ADD
+          calculationunit.asel = 1b0;
+          calculationunit.bsel = 4h0;
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h1;
+          calculationunit.rb = 4b0101;
+          calculationunit.rc = 4h1; 
+          calculationunit.wdsel = 2b0;
+          
+  //        if (calculation.doneCalculation){    // I think need a variable here to check whether got do calculation
+            if(calculationunit.bdata[0] == b1){
+              if (calculationunit.adata >= 16b11){
+                  gameMode.d = gameMode.FRENZY;
+              }
+              else if(calculationunit.adata[1:0] == b00){
+                  gameMode.d = gameMode.INIT2;
+                }
+              else if(calculationunit.adata[1:0] == b01){
+                  gameMode.d = gameMode.INIT3;
+                }
+              else if (calculationunit.adata[1:0] == b10){
+                  gameMode.d = gameMode.WIN;
+                }
           }
-//        }
-//        else{
-//        gameMode.d = gameMode.CHECKCLEAR;
-//        }
+            else if (calculationunit.bdata[0] == b0){
+            gameMode.d = gameMode.IDLE1;
+            }
+  //        }
+  //        else{
+  //        gameMode.d = gameMode.CHECKCLEAR;
+  //        }
+        }
       gameMode.INIT2:
-        calculationunit.alufn = 6b011010;    // ALUFN for "A"
-        calculationunit.asel = 1b0;
-        calculationunit.bsel = 4hA;
-        calculationunit.we = 1b1;
-        calculationunit.ra = 4h3;
-        calculationunit.rc = 4h0;
-        calculationunit.wdsel = 2b0;
-        gameMode.d = gameMode.IDLE1;
-        
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(dec_ctr.ovf){
+          gameMode.d = gameMode.FAIL;
+        }
+        else{
+          calculationunit.alufn = 6b011010;    // ALUFN for "A"
+          calculationunit.asel = 1b0;
+          calculationunit.bsel = 4hA;
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h3;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b0;
+          gameMode.d = gameMode.IDLE1;
+        }
       gameMode.INIT3:
-        calculationunit.alufn = 6b011010;    // ALUFN for "A"
-        calculationunit.asel = 1b0;
-        calculationunit.bsel = 4hA;
-        calculationunit.we = 1b1;
-        calculationunit.ra = 4h4;
-        calculationunit.rc = 4h0;
-        calculationunit.wdsel = 2b0;
-        gameMode.d = gameMode.IDLE1;
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(dec_ctr.ovf){
+          gameMode.d = gameMode.FAIL;
+        }
+        else{
+          calculationunit.alufn = 6b011010;    // ALUFN for "A"
+          calculationunit.asel = 1b0;
+          calculationunit.bsel = 4hA;
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h4;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b0;
+          gameMode.d = gameMode.IDLE1;
+        }
         
       gameMode.FRENZY:
-        calculationunit.alufn = 6b011010;    // ALUFN for "A"
-        calculationunit.asel = 1b0;
-        calculationunit.bsel = 4hA;
-        calculationunit.we = 1b1;
-        calculationunit.ra = 4h6;
-        calculationunit.rc = 4h0;
-        calculationunit.wdsel = 2b0;
-        gameMode.d = gameMode.IDLE1;    
-          
+        dec_ctr.inc = seven_seg_detector.out;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(dec_ctr.ovf){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4h1,4h1,4h1};
+          gameMode.d = gameMode.FAIL;
+        }
+        else{
+          calculationunit.alufn = 6b011010;    // ALUFN for "A"
+          calculationunit.asel = 1b0;
+          calculationunit.bsel = 4hA;
+          calculationunit.we = 1b1;
+          calculationunit.ra = 4h6;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b0;
+          gameMode.d = gameMode.IDLE1;
+        }
+        
       gameMode.WIN:
+        dec_ctr.inc = 1b0;
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
         calculationunit.alufn = 6b010011;    // ALUFN for "NOT A"
         calculationunit.asel = 1b0;
         calculationunit.bsel = 4hA;
@@ -275,6 +324,19 @@ module initialise (
         calculationunit.we = 1b1;
         calculationunit.rc = 4h1;
         calculationunit.wdsel = 2b01;
-        gameMode.d = gameMode.IDLE;             
+        gameMode.d = gameMode.IDLE;
+        
+      gameMode.FAIL:
+        dec_ctr.set = 4hf;
+        dec_ctr.new_val = {4h7, 4h7, 4h7};
+        seg.values = dec_ctr.digits;
+        io_seg = seg.seg;
+        io_sel = ~seg.sel;
+        if(buttondetector.out[10]) {      // check if reset == 1 
+          calculationunit.we = 1b1;
+          calculationunit.rc = 4h0;
+          calculationunit.wdsel = 2b01;
+          gameMode.d = gameMode.RESET;
+        }             
   }
 }
