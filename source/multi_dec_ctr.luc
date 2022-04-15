@@ -8,6 +8,8 @@ module multi_dec_ctr #(
     // if counter only outputs 1 bit , bit will be high only half the time
 
     input inc,                // increment counter
+    input set[4],
+    input new_val[DIGITS][4],
     output digits[DIGITS][4]  // digit values
   ) {
  
@@ -20,8 +22,9 @@ module multi_dec_ctr #(
  
   always {
     dctr.inc[0] = inc;   // increment the first digit
-    digits = dctr.value; // output the values
- 
+    dctr.set[3:0] = set;
+    dctr.new_val[3:0] = new_val[3:0]; 
+    digits = dctr.value; // output the values 
     // if the previous digit overflows, increment the next
     // When theres a overflow from 9 to 0 , next one is incremented
     // If 1st counter does not have previous ctr overflow, use external increment

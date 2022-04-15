@@ -16,21 +16,25 @@ module regfile (
   {
   .clk(clk){
     .rst(rst){
+      pn_gen rng;
       dff board_state[16];
       dff clearval[16]; // clear value
       dff startingseq[16];
       dff secondseq[16]; // beginning sequence of lights
       dff finalseq[16]; // final sequence of light
+      dff randseq[16];
       dff temp_reg[16];
       // add for timer (7 seg)
     }
   }
   
   always {
-  
+    rng.seed = 32h448C1420;
     startingseq.d = 16h01FF;
     secondseq.d = 16h00F0;
-    finalseq.d = 16h00BC;  
+    finalseq.d = 16h00BC;
+    randseq.d = rng.num[15:0];
+    rng.next = 1b1;  
     // write port
     if (we){
       case(write_address){
@@ -51,6 +55,7 @@ module regfile (
       b0011: out_a = secondseq.q;
       b0100: out_a = finalseq.q;
       b0101: out_a = temp_reg.q;
+      b0110: out_a = randseq.q;
       b1111: out_a = 16b0;
       default: out_a = startingseq.q;
     }
@@ -63,6 +68,7 @@ module regfile (
       b0011: out_b = secondseq.q;
       b0100: out_b = finalseq.q;
       b0101: out_b = temp_reg.q;
+      b0110: out_b = randseq.q;
       b1111: out_b = 16b0;
       default: out_b = startingseq.q;
     }

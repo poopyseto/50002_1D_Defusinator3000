@@ -5,6 +5,9 @@ module decimal_counter (
     input rst,      // reset
     // input inc to signal when the value should be increased
     input inc,      // increment the counter
+    // SET value
+    input set,
+    input new_val[4],
     // When the digit is about to overflow to 0 , ovf set to 1
     output ovf,     // counter overflowed
     output value[4] // current value
@@ -17,13 +20,16 @@ module decimal_counter (
   always {
     value = val.q;           // output the value
  
-    ovf = val.q == 9 && inc; // if max value and incrementing, overflow!
- 
+    ovf = val.q == 0 && inc; // if max value and incrementing, overflow!
+    
+    if(set){
+      val.d = new_val; 
+      }
     if (inc) {               // should add 1
-      if (val.q == 9)        // if max value
-        val.d = 0;           // reset to 0
+      if (val.q == 0)        // if 0
+        val.d = 9;           // reset to 9
       else                   // otherwise
-        val.d = val.q + 1;   // add one
+        val.d = val.q - 1;   // add one
     }
   }
 }

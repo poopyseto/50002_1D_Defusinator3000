@@ -10,17 +10,16 @@ module au_top (
   ) {
   
   sig rst;                  // reset signal
-  sig light[12];
   .clk(clk) {
     // The reset conditioner is used to synchronize the reset signal to the FPGA
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
-    //edge_detector seven_seg_detector(#RISE(1), #FALL(0));
+    // edge_detector seven_seg_detector(#RISE(1), #FALL(0));
     .rst(rst){
       initialise init;
-      /*multi_dec_ctr dec_ctr;
+      /* multi_dec_ctr dec_ctr;
       multi_seven_seg seg;
-      counter ctr (#SIZE(1), #DIV(26));*/ 
+      counter ctr (#SIZE(1), #DIV(26));*/
     }
   }
   
@@ -28,6 +27,7 @@ module au_top (
     reset_cond.in = ~rst_n; // input raw inverted reset signal
     rst = reset_cond.out;   // conditioned reset
     usb_tx = usb_rx;
+    led_light = 12b0;
     //led_light[10:0] = io_dip[10:0];
     //led_light[11] = b1;
     // led_light = light;
@@ -36,12 +36,21 @@ module au_top (
     //if(io_dip[10] == 1b1){
       //light = light + 12h001;
     //}
+    
     // seven_seg decimal_counter test
     /*seven_seg_detector.in = ctr.value;
-    dec_ctr.inc = seven_seg_detector.out;
+    dec_ctr.inc = 0;
+    dec_ctr.set = 1b0;
+    dec_ctr.new_val = {4h0,4h0,4h0,4h0};
     seg.values = dec_ctr.digits;
     io_seg = seg.seg;
-    io_sel = ~seg.sel;*/
+    io_sel = ~seg.sel;
+    if(io_dip[10]){
+      led_light[11] = 1b1;
+      dec_ctr.set = 1b1;
+      dec_ctr.new_val = {4h0,4h0,4h1,4h0};
+    }
+    dec_ctr.inc = io_dip[1];*/
     
     init.usb_rx = usb_rx;
     usb_tx = init.usb_tx;
