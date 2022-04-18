@@ -163,7 +163,7 @@ module initialise (
         else {
           gameMode.d = gameMode.IDLE1;
         }
-        
+      // alternate way
       /*gameMode.B1:
         calculationunit.alufn = 6b010110;    // ALUFN for "XOR"
         calculationunit.asel = 1b0;
@@ -278,25 +278,16 @@ module initialise (
         }
         
       gameMode.FRENZY:
-        dec_ctr.inc = seven_seg_detector.out;
-        seg.values = dec_ctr.digits;
-        io_seg = seg.seg;
-        io_sel = ~seg.sel;
-        if(dec_ctr.ovf){
-          dec_ctr.set = 4hf;
-          dec_ctr.new_val = {4h1,4h1,4h1};
-          gameMode.d = gameMode.FAIL;
-        }
-        else{
-          calculationunit.alufn = 6b011010;    // ALUFN for "A"
-          calculationunit.asel = 1b0;
-          calculationunit.bsel = 4hA;
-          calculationunit.we = 1b1;
-          calculationunit.ra = 4h6;
-          calculationunit.rc = 4h0;
-          calculationunit.wdsel = 2b0;
-          gameMode.d = gameMode.IDLE1;
-        }
+        dec_ctr.set = 4hF;
+        dec_ctr.new_val = {4h0,4h3,4h0};
+        calculationunit.alufn = 6b011010;    // ALUFN for "A"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4hA;
+        calculationunit.we = 1b1;
+        calculationunit.ra = 4h6;
+        calculationunit.rc = 4h0;
+        calculationunit.wdsel = 2b0;
+        gameMode.d = gameMode.IDLE1;
         
       gameMode.WIN:
         dec_ctr.inc = 1b0;
@@ -327,8 +318,42 @@ module initialise (
         gameMode.d = gameMode.IDLE;
         
       gameMode.FAIL:
-        dec_ctr.set = 4hf;
-        dec_ctr.new_val = {4h7, 4h7, 4h7};
+      
+        calculationunit.alufn = 6b011010;    // ALUFN for "A"
+        calculationunit.asel = 1b0;
+        calculationunit.bsel = 4hA;
+        calculationunit.we = 1b0;
+        calculationunit.ra = 4h1;
+        calculationunit.wdsel = 2b0;
+        
+        if(calculationunit.adata < 3){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hf, 4hf, 4hf};
+          }
+        else if(calculationunit.adata == 3){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hE, 4hE, 4hE}; 
+          }
+        else if(calculationunit.adata == 4){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hD, 4hD, 4hD}; 
+          }
+        else if(calculationunit.adata == 5){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hC, 4hC, 4hC}; 
+          }
+        else if(calculationunit.adata == 6){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hB, 4hB, 4hB}; 
+          }
+        else if(calculationunit.adata == 7){
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4hA, 4hA, 4hA}; 
+          }
+        else{
+          dec_ctr.set = 4hf;
+          dec_ctr.new_val = {4h5, 4h5, 4h5}; 
+          }
         seg.values = dec_ctr.digits;
         io_seg = seg.seg;
         io_sel = ~seg.sel;
